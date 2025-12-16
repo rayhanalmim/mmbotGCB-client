@@ -18,7 +18,7 @@ interface QRStatusData {
 }
 
 const QR_EXPIRY_SECONDS = 60;
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://mmbotservergcb.vercel.app';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
 
 export default function LoginPage() {
   const router = useRouter();

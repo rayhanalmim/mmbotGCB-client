@@ -81,7 +81,7 @@ export default function DashboardPage() {
           setBalanceUpdating(true);
         }
 
-        const response = await fetch('https://mmbotservergcb.vercel.app/api/users/balance', {
+        const response = await fetch('https://api.gcbtoken.io/api/users/balance', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ export default function DashboardPage() {
 
     const fetchBotStats = async () => {
       try {
-        const response = await fetch('https://mmbotservergcb.vercel.app/api/bot/conditions', {
+        const response = await fetch('https://api.gcbtoken.io/api/bot/conditions', {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -162,7 +162,7 @@ export default function DashboardPage() {
 
     const checkCredentials = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://mmbotservergcb.vercel.app';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
         const response = await fetch(`${apiUrl}/api/users/api-credentials`, {
           method: 'GET',
           headers: {
