@@ -34,6 +34,8 @@ export default function AccountBalance({ token }: AccountBalanceProps) {
       setError(null);
       const response = await apiClient.user.getBalance(1, token);
       
+      console.log('📊 Balance API Response:', response);
+      
       // Handle rate limiting - don't show error, just skip update
       if (response.rateLimited) {
         console.log(`⏱️ Balance API rate limited. Wait ${response.waitTime}s`);
@@ -68,18 +70,39 @@ export default function AccountBalance({ token }: AccountBalanceProps) {
           }, 300);
         }
       } else {
+        // Clear balances on error
+        setBalances([]);
+        
         // Check if error is due to missing credentials
         if (response.needsCredentials || response.msg?.includes('credentials')) {
+          console.log('🔑 API Credentials Required - Setting error state');
           setNeedsCredentials(true);
           setError('API credentials not configured');
         } else {
+          console.log('❌ Balance API Error:', response.msg);
           setError(response.msg || 'Failed to fetch balance');
           setNeedsCredentials(false);
         }
+        
+        // Clear updating state
+        if (!isInitialLoad) {
+          setTimeout(() => {
+            setUpdatingBalances({});
+          }, 300);
+        }
       }
     } catch (err) {
+      setBalances([]);
       setError('Failed to fetch account balance');
+      setNeedsCredentials(false);
       console.error('Balance fetch error:', err);
+      
+      // Clear updating state on error
+      if (!isInitialLoad) {
+        setTimeout(() => {
+          setUpdatingBalances({});
+        }, 300);
+      }
     } finally {
       if (isInitialLoad) {
         setLoading(false);
@@ -100,6 +123,7 @@ export default function AccountBalance({ token }: AccountBalanceProps) {
   }, [token, fetchBalance]);
 
   if (loading) {
+    console.log('⏳ AccountBalance: Rendering loading state');
     return (
       <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-5 shadow-2xl border border-gray-700">
         <div className="h-5 bg-gray-700 rounded w-32 mb-4 animate-pulse"></div>
@@ -121,6 +145,7 @@ export default function AccountBalance({ token }: AccountBalanceProps) {
   }
 
   if (error) {
+    console.log('⚠️ AccountBalance: Rendering error state', { error, needsCredentials });
     return (
       <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-5 shadow-2xl border border-gray-700">
         <div className="flex items-center gap-3 mb-4">
