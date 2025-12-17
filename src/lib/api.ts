@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // API Service for MMBot
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
 
 // Helper function to get auth headers
 function getAuthHeaders(token?: string | null): HeadersInit {
