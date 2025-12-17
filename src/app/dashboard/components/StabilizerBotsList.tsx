@@ -32,8 +32,8 @@ export default function StabilizerBotsList({ token, refreshTrigger }: Stabilizer
 
     fetchBots();
     
-    // Poll every 3 seconds for updates
-    const interval = setInterval(fetchBots, 3000);
+    // Poll every 4 seconds for updates
+    const interval = setInterval(fetchBots, 4000);
     return () => clearInterval(interval);
   }, [token, refreshTrigger]);
 
@@ -109,87 +109,153 @@ export default function StabilizerBotsList({ token, refreshTrigger }: Stabilizer
       )}
 
       {bots.length === 0 ? (
-        <div className="text-center py-8">
-          <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="text-center py-12">
+          <div className="w-20 h-20 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-green-500/30">
+            <svg className="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
           </div>
-          <p className="text-gray-400 text-sm">No stabilizer bots yet</p>
-          <p className="text-gray-600 text-xs mt-1">Create a stabilizer bot above to get started</p>
+          <p className="text-gray-300 font-semibold">No stabilizer bots yet</p>
+          <p className="text-gray-500 text-sm mt-2">Create your first stabilizer bot to maintain target prices</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {bots.map((bot) => {
+            const isRunning = bot.status === 'running';
+            const priceChange = bot.lastMarketPrice && bot.lastFinalPrice 
+              ? (((bot.lastFinalPrice - bot.lastMarketPrice) / bot.lastMarketPrice) * 100)
+              : 0;
+            
             return (
-              <div key={bot._id} className="bg-[#27272a] border border-[#3f3f46] rounded-xl p-4 hover:border-green-500/50 transition-all">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <h3 className="text-white font-bold text-sm mb-1">{bot.name}</h3>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
-                        bot.status === 'running' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
-                        'bg-gray-500/20 text-gray-400 border border-gray-500/30'
-                      }`}>
-                        {bot.status.toUpperCase()}
+              <div 
+                key={bot._id} 
+                className={`
+                  group relative bg-[#1f1f23] border-2 rounded-2xl p-5 transition-all duration-300
+                  hover:shadow-2xl hover:scale-[1.01]
+                  ${isRunning 
+                    ? 'border-green-500/50 shadow-lg shadow-green-500/20' 
+                    : 'border-[#3f3f46] hover:border-gray-500/50'
+                  }
+                `}
+              >
+                {/* Running indicator */}
+                {isRunning && (
+                  <div className="absolute -top-1 -right-1">
+                    <span className="relative flex h-4 w-4">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-4 w-4 bg-green-500"></span>
+                    </span>
+                  </div>
+                )}
+
+                {/* Header */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="text-white font-bold text-base truncate">{bot.name}</h3>
+                      <span className={`
+                        px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide
+                        ${isRunning 
+                          ? 'bg-green-500/20 text-green-300 border border-green-500/40 shadow-sm shadow-green-500/50' 
+                          : 'bg-gray-600/20 text-gray-400 border border-gray-600/40'
+                        }
+                      `}>
+                        {bot.status}
                       </span>
-                      <span className="text-xs text-gray-500">Target: ${bot.targetPrice.toFixed(6)}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="text-gray-400">Target:</span>
+                      <span className="text-green-400 font-mono font-bold">${bot.targetPrice.toFixed(6)}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  
+                  <div className="flex items-center gap-2 ml-4">
                     {bot.isRunning ? (
                       <button
                         onClick={() => bot._id && handleStop(bot._id)}
-                        className="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 rounded-lg text-xs font-semibold transition-all"
+                        className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg text-sm font-bold transition-all shadow-lg shadow-red-500/30 hover:shadow-red-500/50 active:scale-95"
                       >
                         Stop
                       </button>
                     ) : (
                       <button
                         onClick={() => bot._id && handleStart(bot._id)}
-                        className="px-3 py-1 bg-green-500/20 hover:bg-green-500/30 text-green-400 border border-green-500/30 rounded-lg text-xs font-semibold transition-all"
+                        className="px-4 py-2 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white rounded-lg text-sm font-bold transition-all shadow-lg shadow-green-500/30 hover:shadow-green-500/50 active:scale-95"
                       >
                         Start
                       </button>
                     )}
                     <button
                       onClick={() => bot._id && handleDelete(bot._id)}
-                      className="px-3 py-1 bg-gray-500/20 hover:bg-gray-500/30 text-gray-400 border border-gray-500/30 rounded-lg text-xs font-semibold transition-all"
+                      className="px-4 py-2 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded-lg text-sm font-bold transition-all border border-gray-600/50 hover:border-gray-500 active:scale-95"
                     >
                       Delete
                     </button>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 text-xs">
-                  <div className="bg-[#1a1a1a] rounded-lg p-2">
-                    <div className="text-gray-500 mb-1">Executions</div>
-                    <div className="text-white font-bold">{bot.executionCount || 0}</div>
+                {/* Stats Grid */}
+                <div className="grid grid-cols-2 gap-3 mb-3">
+                  <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/30 rounded-xl p-3">
+                    <div className="text-blue-400 text-xs font-semibold mb-1 flex items-center gap-1">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      Executions
+                    </div>
+                    <div className="text-white font-bold text-xl">{bot.executionCount || 0}</div>
                   </div>
-                  <div className="bg-[#1a1a1a] rounded-lg p-2">
-                    <div className="text-gray-500 mb-1">Total Spent</div>
-                    <div className="text-white font-bold">${(bot.totalUsdtSpent || 0).toFixed(2)}</div>
+                  <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border border-purple-500/30 rounded-xl p-3">
+                    <div className="text-purple-400 text-xs font-semibold mb-1 flex items-center gap-1">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Total Spent
+                    </div>
+                    <div className="text-white font-bold text-xl">${(bot.totalUsdtSpent || 0).toFixed(2)}</div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 text-xs mt-3">
-                  <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-2">
-                    <div className="text-green-400 mb-1">✅ Successful</div>
-                    <div className="text-white font-bold">{bot.successfulOrders || 0}</div>
+                {/* Success/Fail Grid */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-xl p-3">
+                    <div className="text-green-300 text-xs font-semibold mb-1 flex items-center gap-1">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Successful
+                    </div>
+                    <div className="text-white font-bold text-xl">{bot.successfulOrders || 0}</div>
                   </div>
-                  <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-2">
-                    <div className="text-red-400 mb-1">❌ Failed</div>
-                    <div className="text-white font-bold">{bot.failedOrders || 0}</div>
+                  <div className="bg-gradient-to-br from-red-500/10 to-rose-500/10 border border-red-500/30 rounded-xl p-3">
+                    <div className="text-red-300 text-xs font-semibold mb-1 flex items-center gap-1">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Failed
+                    </div>
+                    <div className="text-white font-bold text-xl">{bot.failedOrders || 0}</div>
                   </div>
                 </div>
 
+                {/* Last Recovery Info */}
                 {bot.lastMarketPrice && bot.lastFinalPrice && (
-                  <div className="mt-3 p-2 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-                    <div className="text-xs text-blue-200">
-                      <strong>Last Recovery:</strong> ${bot.lastMarketPrice.toFixed(6)} → ${bot.lastFinalPrice.toFixed(6)}
-                      <span className="text-green-400 ml-2">
-                        (+{(((bot.lastFinalPrice - bot.lastMarketPrice) / bot.lastMarketPrice) * 100).toFixed(2)}%)
-                      </span>
+                  <div className="mt-4 p-3 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/30 rounded-xl">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-cyan-200 font-semibold">Last Recovery</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-300 font-mono">${bot.lastMarketPrice.toFixed(6)}</span>
+                        <svg className="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                        <span className="text-white font-mono font-bold">${bot.lastFinalPrice.toFixed(6)}</span>
+                        <span className={`
+                          px-2 py-0.5 rounded-full text-xs font-bold
+                          ${priceChange > 0 ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'}
+                        `}>
+                          {priceChange > 0 ? '+' : ''}{priceChange.toFixed(2)}%
+                        </span>
+                      </div>
                     </div>
                   </div>
                 )}

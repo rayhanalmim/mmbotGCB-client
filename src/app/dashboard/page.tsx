@@ -81,7 +81,7 @@ export default function DashboardPage() {
           setBalanceUpdating(true);
         }
 
-        const response = await fetch('https://api.gcbtoken.io/api/users/balance', {
+        const response = await fetch('http://localhost:3001/api/users/balance', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -96,11 +96,11 @@ export default function DashboardPage() {
         if (data.code === '0' && data.data?.allCoinMap) {
           // Convert allCoinMap object to balances array
           const balancesArray = Object.entries(data.data.allCoinMap).map(([asset, coinData]) => {
-            const coin = coinData as { normal_balance?: string; lock_balance?: string };
+            const coin = coinData as { free?: string; locked?: string; normal_balance?: string; lock_balance?: string };
             return {
               asset: asset,
-              free: coin.normal_balance || '0',
-              locked: coin.lock_balance || '0'
+              free: coin.free || coin.normal_balance || '0',
+              locked: coin.locked || coin.lock_balance || '0'
             };
           });
           setBalances(balancesArray);
@@ -134,7 +134,7 @@ export default function DashboardPage() {
 
     const fetchBotStats = async () => {
       try {
-        const response = await fetch('https://api.gcbtoken.io/api/bot/conditions', {
+        const response = await fetch('http://localhost:3001/api/bot/conditions', {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -162,7 +162,7 @@ export default function DashboardPage() {
 
     const checkCredentials = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
         const response = await fetch(`${apiUrl}/api/users/api-credentials`, {
           method: 'GET',
           headers: {
