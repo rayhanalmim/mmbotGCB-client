@@ -228,6 +228,7 @@ export interface BalanceResponse {
   data: Balance | null;
   rateLimited?: boolean;
   waitTime?: number;
+  needsCredentials?: boolean;
 }
 
 // ============================================
