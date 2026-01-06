@@ -79,7 +79,7 @@ export default function BuyWallBotBuilder({ token, onBotCreated }: BuyWallBotBui
     setSuccess(null);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
       const response = await fetch(`${apiUrl}/api/bot/buywall/create`, {
         method: 'POST',
         headers: {
