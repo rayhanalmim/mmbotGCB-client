@@ -5,9 +5,12 @@ import { useRouter } from 'next/navigation';
 import MarketData from './components/MarketData';
 import BotConditionBuilder from './components/BotConditionBuilder';
 import StabilizerBotBuilder from './components/StabilizerBotBuilder';
+import BuyWallBotBuilder from './components/BuyWallBotBuilder';
 import BotConditionsList from './components/BotConditionsList';
 import StabilizerBotsList from './components/StabilizerBotsList';
+import BuyWallBotsList from './components/BuyWallBotsList';
 import StabilizerBotActivityLogs from './components/StabilizerBotActivityLogs';
+import BuyWallBotActivityLogs from './components/BuyWallBotActivityLogs';
 import MarketMakerBotBuilder from './components/MarketMakerBotBuilder';
 import MarketMakerBotsList from './components/MarketMakerBotsList';
 import MarketMakerBotActivityLogs from './components/MarketMakerBotActivityLogs';
@@ -43,6 +46,7 @@ export default function DashboardPage() {
   const [refreshConditions, setRefreshConditions] = useState(0);
   const [refreshStabilizerBots, setRefreshStabilizerBots] = useState(0);
   const [refreshMarketMakerBots, setRefreshMarketMakerBots] = useState(0);
+  const [refreshBuyWallBots, setRefreshBuyWallBots] = useState(0);
   const [hasValidCredentials, setHasValidCredentials] = useState(false);
   const [balances, setBalances] = useState<{ asset: string; free: string; locked: string }[]>([]);
   const [balanceLoading, setBalanceLoading] = useState(true);
@@ -83,7 +87,7 @@ export default function DashboardPage() {
           setBalanceUpdating(true);
         }
 
-        const response = await fetch('https://api.gcbtoken.io/api/users/balance', {
+        const response = await fetch('http://localhost:3001/api/users/balance', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -136,7 +140,7 @@ export default function DashboardPage() {
 
     const fetchBotStats = async () => {
       try {
-        const response = await fetch('https://api.gcbtoken.io/api/bot/conditions', {
+        const response = await fetch('http://localhost:3001/api/bot/conditions', {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -164,7 +168,7 @@ export default function DashboardPage() {
 
     const checkCredentials = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
         const response = await fetch(`${apiUrl}/api/users/api-credentials`, {
           method: 'GET',
           headers: {
@@ -194,7 +198,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchPrices = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
         
         // Fetch GCB/USDT price through backend API
         const gcbResponse = await fetch(`${apiUrl}/api/test/openapi/ticker?symbol=GCBUSDT`);
@@ -716,6 +720,27 @@ export default function DashboardPage() {
                        </div>
                      </div>
                    </div>
+
+                   {/* Buy Wall Bot - Full Width */}
+                   <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] rounded-2xl border-2 border-orange-500/30 shadow-xl shadow-orange-500/10 overflow-hidden">
+                     <div className="flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-orange-500/10 to-amber-600/10 border-b border-orange-500/30">
+                       <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                         <span className="text-xl">🧱</span>
+                       </div>
+                       <div>
+                         <span className="font-bold text-lg text-white">Buy Wall Bot</span>
+                         <p className="text-xs text-gray-400">Auto-place and refill limit buy orders</p>
+                       </div>
+                     </div>
+                     <div className="p-6">
+                       <BuyWallBotBuilder
+                         token={token}
+                         onBotCreated={() => {
+                           setRefreshBuyWallBots(prev => prev + 1);
+                         }}
+                       />
+                     </div>
+                   </div>
                  </>
                ) : (
                  <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-12 shadow-xl border border-gray-700 text-center">
@@ -751,7 +776,7 @@ export default function DashboardPage() {
                    <div>
                      <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                       <span>Traditional Bots</span>
+                       <span>Conditional & Stabilizer Bots</span>
                      </h3>
                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                        <BotConditionsList token={token} refreshTrigger={refreshConditions} />
@@ -759,14 +784,14 @@ export default function DashboardPage() {
                      </div>
                    </div>
 
-                   {/* Market Maker Bots */}
-                   {/* <div>
+                   {/* Buy Wall Bots */}
+                   <div>
                      <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                        <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                       <span>Market Maker Bots</span>
+                       <span>Buy Wall Bots</span>
                      </h3>
-                     <MarketMakerBotsList token={token} refreshTrigger={refreshMarketMakerBots} />
-                   </div> */}
+                     <BuyWallBotsList token={token} refreshTrigger={refreshBuyWallBots} />
+                   </div>
                  </>
                ) : (
                  <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-12 shadow-xl border border-gray-700 text-center">
@@ -858,7 +883,11 @@ export default function DashboardPage() {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <StabilizerBotActivityLogs token={token} />
                     <BotActivityLogs token={token} />
-                    
+                  </div>
+
+                  {/* Buy Wall Bot Logs */}
+                  <div>
+                    <BuyWallBotActivityLogs token={token} />
                   </div>
 
                   {/* Trade History - Full Width */}
