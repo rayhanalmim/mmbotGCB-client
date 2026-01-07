@@ -57,6 +57,7 @@ export default function BuyWallBotActivityLogs({ token }: BuyWallBotActivityLogs
     if (action === 'INITIAL_PLACE') return '🧱';
     if (action === 'REFILL') return '🔄';
     if (action === 'TOPUP_PARTIAL') return '➕';
+    if (action === 'SKIP') return '⏭️';
     
     switch (type) {
       case 'success':
@@ -70,7 +71,9 @@ export default function BuyWallBotActivityLogs({ token }: BuyWallBotActivityLogs
     }
   };
 
-  const getLogColor = (type: string) => {
+  const getLogColor = (type: string, action?: string) => {
+    if (action === 'SKIP') return 'text-orange-400';
+    
     switch (type) {
       case 'success':
         return 'text-green-400';
@@ -145,7 +148,7 @@ export default function BuyWallBotActivityLogs({ token }: BuyWallBotActivityLogs
                 <span className="text-lg flex-shrink-0">{getLogIcon(log.type, log.action)}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <p className={`text-sm font-medium ${getLogColor(log.type)}`}>
+                    <p className={`text-sm font-medium ${getLogColor(log.type, log.action)}`}>
                       {log.message}
                     </p>
                     <span className="text-[10px] text-gray-500 flex-shrink-0">

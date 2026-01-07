@@ -750,6 +750,7 @@ export interface StabilizerBot {
   name: string;
   symbol: string;
   targetPrice: number;
+  maxBuyAmount?: number;
   isActive: boolean;
   isRunning: boolean;
   executionCount: number;
@@ -760,6 +761,8 @@ export interface StabilizerBot {
   lastCheckedAt: Date | null;
   lastMarketPrice: number | null;
   lastFinalPrice: number | null;
+  lastExceededAmount?: number;
+  thresholdExceeded?: boolean;
   createdAt: Date;
   updatedAt: Date;
   status: 'created' | 'running' | 'stopped';

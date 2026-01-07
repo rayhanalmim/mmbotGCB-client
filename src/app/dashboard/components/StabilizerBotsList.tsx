@@ -12,6 +12,8 @@ export default function StabilizerBotsList({ token, refreshTrigger }: Stabilizer
   const [bots, setBots] = useState<StabilizerBot[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [editingMaxBuy, setEditingMaxBuy] = useState<string | null>(null);
+  const [maxBuyValue, setMaxBuyValue] = useState('');
 
   useEffect(() => {
     if (!token) return;
@@ -71,6 +73,33 @@ export default function StabilizerBotsList({ token, refreshTrigger }: Stabilizer
     } catch (err) {
       console.error('Error deleting bot:', err);
     }
+  };
+
+  const handleUpdateMaxBuy = async (botId: string) => {
+    if (!token) return;
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/bot/stabilizer/${botId}/max-buy`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ maxBuyAmount: parseFloat(maxBuyValue) || 0 })
+      });
+      const data = await response.json();
+      if (data.code === '0') {
+        setBots(bots.map(b => b._id === botId ? { ...b, maxBuyAmount: parseFloat(maxBuyValue) || 0 } : b));
+        setEditingMaxBuy(null);
+        setMaxBuyValue('');
+      }
+    } catch (err) {
+      console.error('Error updating max buy amount:', err);
+    }
+  };
+
+  const startEditMaxBuy = (bot: StabilizerBot) => {
+    setEditingMaxBuy(bot._id || null);
+    setMaxBuyValue((bot.maxBuyAmount || 0).toString());
   };
 
   if (loading) {
@@ -166,6 +195,50 @@ export default function StabilizerBotsList({ token, refreshTrigger }: Stabilizer
                     <div className="flex items-center gap-2 text-sm">
                       <span className="text-gray-400">Target:</span>
                       <span className="text-green-400 font-mono font-bold">${bot.targetPrice.toFixed(6)}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm mt-1">
+                      <span className="text-gray-400">Max Buy:</span>
+                      {editingMaxBuy === bot._id ? (
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={maxBuyValue}
+                            onChange={(e) => setMaxBuyValue(e.target.value)}
+                            className="w-24 bg-[#27272a] text-white border border-orange-500/50 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-orange-400"
+                            placeholder="0"
+                          />
+                          <button
+                            onClick={() => bot._id && handleUpdateMaxBuy(bot._id)}
+                            className="px-2 py-1 bg-green-600 hover:bg-green-500 text-white rounded text-xs font-bold"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={() => { setEditingMaxBuy(null); setMaxBuyValue(''); }}
+                            className="px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded text-xs"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <span className={`font-mono font-bold ${(bot.maxBuyAmount || 0) > 0 ? 'text-orange-400' : 'text-gray-500'}`}>
+                            {(bot.maxBuyAmount || 0) > 0 ? `$${bot.maxBuyAmount?.toFixed(2)}` : 'No limit'}
+                          </span>
+                          <button
+                            onClick={() => startEditMaxBuy(bot)}
+                            className="text-xs text-blue-400 hover:text-blue-300 underline"
+                          >
+                            Edit
+                          </button>
+                          {bot.thresholdExceeded && (
+                            <span className="px-2 py-0.5 bg-red-500/20 text-red-300 text-xs rounded-full border border-red-500/40">
+                              ⚠️ Exceeded: ${bot.lastExceededAmount?.toFixed(2)}
+                            </span>
+                          )}
+                        </>
+                      )}
                     </div>
                   </div>
                   

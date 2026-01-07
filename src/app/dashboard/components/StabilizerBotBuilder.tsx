@@ -11,6 +11,7 @@ interface StabilizerBotBuilderProps {
 export default function StabilizerBotBuilder({ token, onBotCreated }: StabilizerBotBuilderProps) {
   const [name, setName] = useState('');
   const [targetPrice, setTargetPrice] = useState('');
+  const [maxBuyAmount, setMaxBuyAmount] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -35,6 +36,7 @@ export default function StabilizerBotBuilder({ token, onBotCreated }: Stabilizer
       const bot = {
         name: name || `Stabilizer Bot - ${new Date().toLocaleString()}`,
         targetPrice: parseFloat(targetPrice),
+        maxBuyAmount: maxBuyAmount ? parseFloat(maxBuyAmount) : 0,
       };
 
       const response = await apiClient.stabilizerBot.create(bot, token);
@@ -43,6 +45,7 @@ export default function StabilizerBotBuilder({ token, onBotCreated }: Stabilizer
         setSuccess('Stabilizer bot created successfully!');
         setName('');
         setTargetPrice('');
+        setMaxBuyAmount('');
         onBotCreated();
         setTimeout(() => setSuccess(null), 3000);
       } else {
@@ -97,6 +100,23 @@ export default function StabilizerBotBuilder({ token, onBotCreated }: Stabilizer
                 className="w-full bg-[#27272a] text-white border border-[#3f3f46] rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400"
               />
               <p className="text-xs text-gray-500 mt-1">The price you want to maintain for GCB token</p>
+            </div>
+
+            {/* Max Buy Amount */}
+            <div>
+              <label className="block text-gray-300 text-xs font-semibold mb-1">
+                Max Buy Amount (USDT) - Optional
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={maxBuyAmount}
+                onChange={(e) => setMaxBuyAmount(e.target.value)}
+                onWheel={preventScrollChange}
+                placeholder="100"
+                className="w-full bg-[#27272a] text-white border border-[#3f3f46] rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
+              />
+              <p className="text-xs text-gray-500 mt-1">Maximum USDT to spend per stabilization. Leave empty for no limit.</p>
             </div>
           </div>
         </div>
