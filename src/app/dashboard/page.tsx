@@ -11,6 +11,9 @@ import StabilizerBotsList from './components/StabilizerBotsList';
 import BuyWallBotsList from './components/BuyWallBotsList';
 import StabilizerBotActivityLogs from './components/StabilizerBotActivityLogs';
 import BuyWallBotActivityLogs from './components/BuyWallBotActivityLogs';
+import PriceKeeperBotBuilder from './components/PriceKeeperBotBuilder';
+import PriceKeeperBotsList from './components/PriceKeeperBotsList';
+import PriceKeeperBotActivityLogs from './components/PriceKeeperBotActivityLogs';
 import MarketMakerBotBuilder from './components/MarketMakerBotBuilder';
 import MarketMakerBotsList from './components/MarketMakerBotsList';
 import MarketMakerBotActivityLogs from './components/MarketMakerBotActivityLogs';
@@ -47,6 +50,7 @@ export default function DashboardPage() {
   const [refreshStabilizerBots, setRefreshStabilizerBots] = useState(0);
   const [refreshMarketMakerBots, setRefreshMarketMakerBots] = useState(0);
   const [refreshBuyWallBots, setRefreshBuyWallBots] = useState(0);
+  const [refreshPriceKeeperBots, setRefreshPriceKeeperBots] = useState(0);
   const [hasValidCredentials, setHasValidCredentials] = useState(false);
   const [balances, setBalances] = useState<{ asset: string; free: string; locked: string }[]>([]);
   const [balanceLoading, setBalanceLoading] = useState(true);
@@ -741,6 +745,27 @@ export default function DashboardPage() {
                        />
                      </div>
                    </div>
+
+                   {/* Price Keeper Bot - Full Width */}
+                   <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] rounded-2xl border-2 border-cyan-500/30 shadow-xl shadow-cyan-500/10 overflow-hidden">
+                     <div className="flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-cyan-500/10 to-blue-600/10 border-b border-cyan-500/30">
+                       <div className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                         <span className="text-xl">🎯</span>
+                       </div>
+                       <div>
+                         <span className="font-bold text-lg text-white">Price Keeper Bot</span>
+                         <p className="text-xs text-gray-400">Keep visible price synced with best ask</p>
+                       </div>
+                     </div>
+                     <div className="p-6">
+                       <PriceKeeperBotBuilder
+                         token={token}
+                         onBotCreated={() => {
+                           setRefreshPriceKeeperBots(prev => prev + 1);
+                         }}
+                       />
+                     </div>
+                   </div>
                  </>
                ) : (
                  <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-12 shadow-xl border border-gray-700 text-center">
@@ -791,6 +816,15 @@ export default function DashboardPage() {
                        <span>Buy Wall Bots</span>
                      </h3>
                      <BuyWallBotsList token={token} refreshTrigger={refreshBuyWallBots} />
+                   </div>
+
+                   {/* Price Keeper Bots */}
+                   <div>
+                     <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                       <div className="w-2 h-2 bg-cyan-500 rounded-full"></div>
+                       <span>Price Keeper Bots</span>
+                     </h3>
+                     <PriceKeeperBotsList token={token} refreshTrigger={refreshPriceKeeperBots} />
                    </div>
                  </>
                ) : (
@@ -888,6 +922,11 @@ export default function DashboardPage() {
                   {/* Buy Wall Bot Logs */}
                   <div>
                     <BuyWallBotActivityLogs token={token} />
+                  </div>
+
+                  {/* Price Keeper Bot Logs */}
+                  <div>
+                    <PriceKeeperBotActivityLogs token={token} />
                   </div>
 
                   {/* Trade History - Full Width */}

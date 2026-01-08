@@ -3,15 +3,17 @@
 import { useState } from 'react';
 import BotConditionBuilder from './BotConditionBuilder';
 import StabilizerBotBuilder from './StabilizerBotBuilder';
+import PriceKeeperBotBuilder from './PriceKeeperBotBuilder';
 
 interface BotBuilderTabsProps {
   token: string | null;
   onConditionCreated: () => void;
   onStabilizerBotCreated: () => void;
+  onPriceKeeperBotCreated?: () => void;
 }
 
-export default function BotBuilderTabs({ token, onConditionCreated, onStabilizerBotCreated }: BotBuilderTabsProps) {
-  const [activeTab, setActiveTab] = useState<'condition' | 'stabilizer'>('condition');
+export default function BotBuilderTabs({ token, onConditionCreated, onStabilizerBotCreated, onPriceKeeperBotCreated }: BotBuilderTabsProps) {
+  const [activeTab, setActiveTab] = useState<'condition' | 'stabilizer' | 'pricekeeper'>('condition');
 
   return (
     <div className="space-y-4">
@@ -54,14 +56,33 @@ export default function BotBuilderTabs({ token, onConditionCreated, onStabilizer
               <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-green-500 to-emerald-500"></div>
             )}
           </button>
+          <button
+            onClick={() => setActiveTab('pricekeeper')}
+            className={`flex-1 px-6 py-4 font-semibold text-sm transition-all relative ${
+              activeTab === 'pricekeeper'
+                ? 'text-white bg-[#27272a]'
+                : 'text-gray-400 hover:text-gray-300 hover:bg-[#1a1a1a]'
+            }`}
+          >
+            <div className="flex items-center justify-center gap-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+              Price Keeper
+            </div>
+            {activeTab === 'pricekeeper' && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-500 to-blue-500"></div>
+            )}
+          </button>
         </div>
 
         <div className="p-6">
-          {activeTab === 'condition' ? (
+          {activeTab === 'condition' && (
             <div>
               <BotConditionBuilder token={token} onConditionCreated={onConditionCreated} />
             </div>
-          ) : (
+          )}
+          {activeTab === 'stabilizer' && (
             <div>
               <div className="mb-4">
                 <h3 className="text-white font-bold text-lg mb-1">Price Stabilizer Bot</h3>
@@ -70,6 +91,17 @@ export default function BotBuilderTabs({ token, onConditionCreated, onStabilizer
                 </p>
               </div>
               <StabilizerBotBuilder token={token} onBotCreated={onStabilizerBotCreated} />
+            </div>
+          )}
+          {activeTab === 'pricekeeper' && (
+            <div>
+              <div className="mb-4">
+                <h3 className="text-white font-bold text-lg mb-1">Price Keeper Bot</h3>
+                <p className="text-gray-400 text-sm">
+                  Keep the visible market price synced with the best ask price. When someone sells and the last trade price drops, bot places a small market buy to refresh the displayed price.
+                </p>
+              </div>
+              <PriceKeeperBotBuilder token={token} onBotCreated={onPriceKeeperBotCreated || (() => {})} />
             </div>
           )}
         </div>
