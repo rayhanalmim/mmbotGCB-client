@@ -25,7 +25,7 @@ interface TickerData {
 type SubTab = 'spot' | 'create' | 'manage' | 'logs';
 
 export default function MexcDashboard() {
-    const [activeSubTab, setActiveSubTab] = useState<SubTab>('spot');
+    const [activeSubTab, setActiveSubTab] = useState<SubTab>('create');
     const [refreshBots, setRefreshBots] = useState(0);
     const [balances, setBalances] = useState<Balance[]>([]);
     const [ticker, setTicker] = useState<TickerData | null>(null);
