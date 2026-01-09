@@ -32,7 +32,7 @@ export default function MexcDashboard() {
     const [ticker24hr, setTicker24hr] = useState<TickerData | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
 
     const fetchBalances = useCallback(async () => {
         try {

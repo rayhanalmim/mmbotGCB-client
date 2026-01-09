@@ -33,7 +33,7 @@ export default function MexcMMBotsList({ refreshTrigger }: MexcMMBotsListProps) 
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
 
   const fetchBots = useCallback(async () => {
     try {

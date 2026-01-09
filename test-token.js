@@ -1,7 +1,7 @@
 // d:\mmbot\mmbot\test-token.js
 
 // No need for node-fetch import in Node.js 18+ ✅
-const SERVER_URL = 'http://localhost:3001';
+const SERVER_URL = 'https://api.gcbtoken.io';
 
 // ============================================
 // Test Token by Fetching Balance

@@ -16,7 +16,7 @@ export default function MexcMMBotBuilder({ onBotCreated }: MexcMMBotBuilderProps
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -36,7 +36,7 @@ export default function MexcMMBotLogs() {
   const [currentPage, setCurrentPage] = useState(1);
   const monitorLogsRef = useRef<HTMLDivElement>(null);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
 
   const fetchLogs = useCallback(async () => {
     try {

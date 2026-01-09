@@ -29,7 +29,7 @@ export default function PriceKeeperBotActivityLogs({ token, botId }: PriceKeeper
     if (!token) return;
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
       const endpoint = botId 
         ? `${apiUrl}/api/bot/price-keeper/${botId}/logs?limit=100`
         : `${apiUrl}/api/bot/price-keeper/logs?limit=100`;

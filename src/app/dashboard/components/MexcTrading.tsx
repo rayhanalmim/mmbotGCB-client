@@ -51,7 +51,7 @@ export default function MexcTrading() {
   // Tab state
   const [activeTab, setActiveTab] = useState<'trade' | 'orders' | 'history'>('trade');
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
 
   const fetchBalances = useCallback(async () => {
     try {
