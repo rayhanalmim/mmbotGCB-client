@@ -29,7 +29,7 @@ export default function BuyWallBotActivityLogs({ token }: BuyWallBotActivityLogs
     if (!token) return;
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const response = await fetch(`${apiUrl}/api/bot/buywall/logs?limit=100`, {
         headers: {
           'Content-Type': 'application/json',

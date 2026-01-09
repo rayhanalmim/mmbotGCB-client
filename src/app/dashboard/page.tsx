@@ -24,6 +24,7 @@ import BotTradeHistory from './components/BotTradeHistory';
 import OpenOrders from './components/OpenOrders';
 import OrderBookDisplay from './components/OrderBookDisplay';
 import TradingViewChart from './components/TradingViewChart';
+import MexcDashboard from './components/MexcDashboard';
 
 // Custom hook to read localStorage safely
 function useLocalStorage(key: string): string | null {
@@ -56,7 +57,7 @@ export default function DashboardPage() {
   const [balanceLoading, setBalanceLoading] = useState(true);
   const [balanceUpdating, setBalanceUpdating] = useState(false);
   const [botStats, setBotStats] = useState({ total: 0, running: 0, executed: 0 });
-  const [activeTab, setActiveTab] = useState<'analysis' | 'createbot' | 'mybots' | 'orders' | 'logs'>('analysis');
+  const [activeTab, setActiveTab] = useState<'analysis' | 'createbot' | 'mybots' | 'orders' | 'logs' | 'mexc'>('analysis');
   const [gcbPrice, setGcbPrice] = useState<number | null>(null);
   const [usdtPrice, setUsdtPrice] = useState<number | null>(null);
 
@@ -91,7 +92,7 @@ export default function DashboardPage() {
           setBalanceUpdating(true);
         }
 
-        const response = await fetch('https://api.gcbtoken.io/api/users/balance', {
+        const response = await fetch('http://localhost:3001/api/users/balance', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -144,7 +145,7 @@ export default function DashboardPage() {
 
     const fetchBotStats = async () => {
       try {
-        const response = await fetch('https://api.gcbtoken.io/api/bot/conditions', {
+        const response = await fetch('http://localhost:3001/api/bot/conditions', {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -172,7 +173,7 @@ export default function DashboardPage() {
 
     const checkCredentials = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
         const response = await fetch(`${apiUrl}/api/users/api-credentials`, {
           method: 'GET',
           headers: {
@@ -202,7 +203,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchPrices = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
         
         // Fetch GCB/USDT price through backend API
         const gcbResponse = await fetch(`${apiUrl}/api/test/openapi/ticker?symbol=GCBUSDT`);
@@ -462,6 +463,23 @@ export default function DashboardPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 <span className="relative z-10">Logs</span>
+              </button>
+              
+              <button
+                onClick={() => setActiveTab('mexc')}
+                className={`group flex-1 min-w-[140px] px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2.5 relative overflow-hidden ${
+                  activeTab === 'mexc'
+                    ? 'bg-gradient-to-br from-[#00B897] to-[#00D4AA] text-white shadow-lg shadow-[#00B897]/50 scale-[1.02]'
+                    : 'bg-[#27272a] text-gray-400 hover:bg-[#2f2f32] hover:text-white hover:scale-[1.01]'
+                }`}
+              >
+                {activeTab === 'mexc' && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+                )}
+                <svg className="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                </svg>
+                <span className="relative z-10">MEXC</span>
               </button>
              </div>
            </div>
@@ -953,6 +971,13 @@ export default function DashboardPage() {
                   </button>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* MEXC Tab Content */}
+          {activeTab === 'mexc' && (
+            <div className="space-y-6">
+              <MexcDashboard />
             </div>
           )}
         </div>

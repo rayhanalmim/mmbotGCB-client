@@ -78,7 +78,7 @@ export default function StabilizerBotsList({ token, refreshTrigger }: Stabilizer
   const handleUpdateMaxBuy = async (botId: string) => {
     if (!token) return;
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io'}/api/bot/stabilizer/${botId}/max-buy`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/bot/stabilizer/${botId}/max-buy`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

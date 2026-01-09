@@ -38,7 +38,7 @@ export default function PriceKeeperBotBuilder({ token, onBotCreated }: PriceKeep
     setSuccess(null);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const response = await fetch(`${apiUrl}/api/bot/price-keeper/create`, {
         method: 'POST',
         headers: {

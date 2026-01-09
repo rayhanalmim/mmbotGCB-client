@@ -41,7 +41,7 @@ export default function BuyWallBotsList({ token, refreshTrigger }: BuyWallBotsLi
     if (!token) return;
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const response = await fetch(`${apiUrl}/api/bot/buywall/list`, {
         headers: {
           'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ export default function BuyWallBotsList({ token, refreshTrigger }: BuyWallBotsLi
   const handleStart = async (botId: string) => {
     setActionLoading(botId);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const response = await fetch(`${apiUrl}/api/bot/buywall/${botId}/start`, {
         method: 'POST',
         headers: {
@@ -90,7 +90,7 @@ export default function BuyWallBotsList({ token, refreshTrigger }: BuyWallBotsLi
   const handleStop = async (botId: string) => {
     setActionLoading(botId);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const response = await fetch(`${apiUrl}/api/bot/buywall/${botId}/stop`, {
         method: 'POST',
         headers: {
@@ -114,7 +114,7 @@ export default function BuyWallBotsList({ token, refreshTrigger }: BuyWallBotsLi
 
     setActionLoading(botId);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const response = await fetch(`${apiUrl}/api/bot/buywall/${botId}`, {
         method: 'DELETE',
         headers: {
@@ -138,7 +138,7 @@ export default function BuyWallBotsList({ token, refreshTrigger }: BuyWallBotsLi
 
     setActionLoading(botId);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const response = await fetch(`${apiUrl}/api/bot/buywall/${botId}/reset`, {
         method: 'POST',
         headers: {

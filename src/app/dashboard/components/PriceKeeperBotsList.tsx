@@ -35,7 +35,7 @@ export default function PriceKeeperBotsList({ token, refreshTrigger }: PriceKeep
     if (!token) return;
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const response = await fetch(`${apiUrl}/api/bot/price-keeper/list`, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -72,7 +72,7 @@ export default function PriceKeeperBotsList({ token, refreshTrigger }: PriceKeep
     setActionLoading(botId);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const response = await fetch(`${apiUrl}/api/bot/price-keeper/${botId}/start`, {
         method: 'POST',
         headers: {
@@ -100,7 +100,7 @@ export default function PriceKeeperBotsList({ token, refreshTrigger }: PriceKeep
     setActionLoading(botId);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const response = await fetch(`${apiUrl}/api/bot/price-keeper/${botId}/stop`, {
         method: 'POST',
         headers: {
@@ -130,7 +130,7 @@ export default function PriceKeeperBotsList({ token, refreshTrigger }: PriceKeep
     setActionLoading(botId);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gcbtoken.io';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const response = await fetch(`${apiUrl}/api/bot/price-keeper/${botId}`, {
         method: 'DELETE',
         headers: {
